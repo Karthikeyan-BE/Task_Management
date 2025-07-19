@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Pending Task Alert</title>
+</head>
+<body style="margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #fff1f2; padding: 20px;">
+  <table align="center" width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);">
+    <tr>
+      <td style="background-color: #ef4444; padding: 30px; text-align: center;">
+        <img src="https://cdn-icons-png.flaticon.com/512/1827/1827504.png" width="80" alt="Pending Task Icon" />
+        <h1 style="color: #ffffff;">Pending Task Reminder</h1>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 30px;">
+        <p>Hi <strong>{{user}}</strong>,</p>
+        <p>⏳ You still have the following task pending:</p>
+        <ul style="list-style: none; padding: 0;">
+          <li><strong>📌 Title:</strong> {{taskTitle}}</li>
+          <li><strong>📅 Deadline:</strong> {{deadline}}</li>
+        </ul>
+        <p>Please complete it as soon as possible. We’re counting on you! 🚀</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: #fee2e2; text-align: center; padding: 15px; font-size: 13px; color: #7f1d1d;">
+        Task Management System © 2025
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
