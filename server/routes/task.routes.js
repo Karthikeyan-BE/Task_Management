@@ -5,10 +5,10 @@ import authUser from '../middleware/auth.middleware.js'
 
 const router = express.Router();
 
-router.post('/', authUser , isAdmin , createTask);
-router.post('/complete/', authUser , completeTask);
 router.get('/', authUser ,isAdmin , getAllTask);
-router.put('/', authUser ,isAdmin , updateTask);
+router.post('/', authUser , isAdmin , createTask);
+router.put('/:taskId', authUser ,isAdmin , updateTask);
+router.post('/complete/:taskId', authUser , completeTask);
 router.delete('/', authUser ,isAdmin , deleteTask);
 
 export default router;

@@ -41,7 +41,10 @@ const createTask = async (req, res) => {
         if (!isValidDate(dueDate)) {
             return res.status(400).json({ error: 'Invalid due date format' });
         }
-
+        const isExistingTask = await Task.find({taskName});
+        if(isExistingTask){
+            return res.status(400).json({ error: 'Task Name Already Exists' });
+        }
         const assignedDate = new Date();
         const due = new Date(dueDate);
         if (due < assignedDate) {
@@ -91,9 +94,15 @@ const createTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { taskId } = req.params;
+        if(!taskId){
+            return res.status(400).json({ error: 'Need Task ID' });
+        }
         const { taskName, taskDescription, dueDate } = req.body;
-
+             const isExistingTask = await Task.find({taskName});
+        if(isExistingTask){
+            return res.status(400).json({ error: 'Task Name Already Exists' });
+        }
         const task = await Task.findById(id);
         if (!task) {
             return res.status(404).json({ error: 'Task not found' });
@@ -114,7 +123,6 @@ const updateTask = async (req, res) => {
             }
         }
 
-        
         if (taskName) task.taskName = taskName.trim();
         if (taskDescription) task.taskDescription = taskDescription.trim();
         if (dueDate) task.dueDate = new Date(dueDate);
@@ -131,7 +139,10 @@ const updateTask = async (req, res) => {
 
 const deleteTask = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { taskId } = req.params;
+        if(!taskId){
+            return res.status(400).json({ error: 'Need Task ID' });
+        }
         const task = await Task.findByIdAndDelete(id);
 
         if (!task) {
@@ -159,12 +170,14 @@ const deleteTask = async (req, res) => {
 
 const completeTask = async (req, res) => {
     try {
-        const { taskId, userId } = req.body;
-
-        if (!taskId || !userId) {
-            return res.status(400).json({ error: 'taskId and userId are required' });
+        const { taskId } = req.params;
+        if(!taskId){
+            return res.status(400).json({ error: 'Need Task ID' });
         }
-
+        const {userId} = req.body;
+        if(!userId){
+            return res.status(400).json({ error: 'Need User ID' });
+        }
         const task = await Task.findById(taskId);
         const user = await User.findById(userId);
 
@@ -191,6 +204,7 @@ const completeTask = async (req, res) => {
             replacements: {
                 username: user.name,
                 taskName: task.taskName,
+                taskDescription:task.taskDescription,
                 completedDate: new Date().toDateString()
             }
         });
