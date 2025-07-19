@@ -6,11 +6,11 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import env from 'dotenv';
 env.config();
-// Simulate __dirname in ES module
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Setup Nodemailer transporter using environment variables
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
