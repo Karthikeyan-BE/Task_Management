@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useUserStore from '../../Store/useUserStore';
 import { Edit, Trash2, Search, User, Mail, Hash, Calendar } from 'lucide-react';  
 import Swal from 'sweetalert2'; 
-// import Loading from '../../Components/Loading'; // Uncomment if needed
+import Loading from '../../Components/Loading'; // Uncomment if needed
 
 const departments = [
   'Aeronautical Engineering',
@@ -195,8 +195,8 @@ const Users = () => {
       </div>
 
       {/* Users List */}
-      {/* Uncomment this if you have a loading spinner */}
-      {/* {loadingUsers ? <Loading /> : ( */}
+      Uncomment this if you have a loading spinner
+      {loadingUsers ? <Loading /> : (
       <div className="bg-white p-4 rounded shadow-md">
         <h3 className="text-lg font-semibold mb-4">User List</h3>
         {filteredUsers.length === 0 ? (
@@ -221,7 +221,7 @@ const Users = () => {
                     <td className="py-2 px-4">{user.name}</td>
                     <td className="py-2 px-4">{user.email}</td>
                     <td className="py-2 px-4">{user.department}</td>
-                    <td className="py-2 px-4 text-center">{user.assignedTask?.length || 0}</td>
+                    <td className="py-2 px-4 text-center">{user.pendingTask.length}</td>
                     <td className="py-2 px-4">
                       <button
                         onClick={() => handleSelectUserForUpdate(user)}
@@ -243,7 +243,7 @@ const Users = () => {
           </div>
         )}
       </div>
-      {/* )} */}
+      )} 
     </div>
   );
 };

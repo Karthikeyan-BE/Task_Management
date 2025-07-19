@@ -5,7 +5,7 @@ import cors from 'cors';
 import connectDB from './Database/connectDB.js';
 import authRoute from './routes/auth.routes.js';
 import taskRoute from './routes/task.routes.js';
-
+import userRoute from './routes/user.Routes.js';
 env.config();
 
 const app = express();
@@ -20,6 +20,7 @@ app.use(cors({
 
 
 app.use('/api/auth', authRoute)
+app.use('/api/user', userRoute)
 app.use('/api/task', taskRoute)
 
 

@@ -32,7 +32,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <nav
         className={`
-          fixed z-40 top-0 left-0 h-screen bg-gray-900 text-white w-64 transform 
+          fixed z-40 top-0 left-0 h-screen  bg-gray-900 text-white w-64 transform 
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
           md:translate-x-0 md:relative md:flex 
           flex-col justify-between transition-transform duration-300 ease-in-out shadow-lg
