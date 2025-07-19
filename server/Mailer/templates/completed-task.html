@@ -5,43 +5,126 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>✅ Task Completed</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     body {
+      background-color: #f0fdf4; /* green-50 */
+      color: #1f2937; /* gray-800 */
       font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 40rem;
+      margin: 2.5rem auto;
+      background-color: white;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 1rem;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #16a34a; /* green-600 */
+      margin: 0;
+    }
+
+    .header span {
+      font-size: 0.875rem;
+      color: #6b7280; /* gray-500 */
+    }
+
+    .content h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .content p {
+      font-size: 1.125rem;
+      line-height: 1.6;
+      margin: 0.5rem 0;
+    }
+
+    .task-box {
+      background-color: #dcfce7; /* green-100 */
+      border-left: 4px solid #4ade80; /* green-400 */
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .task-box p {
+      margin: 0.5rem 0;
+    }
+
+    .button-container {
+      text-align: center;
+      padding-top: 1rem;
+    }
+
+    .view-button {
+      display: inline-block;
+      background-color: #16a34a; /* green-600 */
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .view-button:hover {
+      background-color: #15803d; /* green-700 */
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.875rem;
+      color: #6b7280; /* gray-500 */
+      padding-top: 1.5rem;
+    }
+
+    .footer p {
+      margin: 0.25rem 0;
     }
   </style>
 </head>
 
-<body class="bg-green-50 text-gray-800">
-  <div class="max-w-xl mx-auto bg-white shadow-xl rounded-xl p-8 mt-10 space-y-8">
-
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-green-600">✅ Task Completed</h1>
-      <span class="text-sm text-gray-500">{{date}}</span>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✅ Task Completed</h1>
+      <span>{{date}}</span>
     </div>
 
-    <div class="space-y-4">
-      <h2 class="text-xl font-semibold">Well done, {{user}}! 🎉</h2>
-      <p class="text-lg leading-relaxed">You've successfully completed the task below. Great job staying on track! 🙌</p>
+    <div class="content">
+      <h2>Well done, {{username}}! 🎉</h2>
+      <p>You've successfully completed the task below. Great job staying on track! 🙌</p>
 
-      <div class="bg-green-100 border-l-4 border-green-400 p-4 rounded-md space-y-2">
-        <p><strong>📝 Task:</strong> {{title}}</p>
-        <p><strong>📅 Completed On:</strong> {{completed_date}}</p>
-        <p><strong>📌 Description:</strong> {{description}}</p>
+      <div class="task-box">
+        <p><strong>📝 Task:</strong> {{taskName}}</p>
+        <p><strong>📌 Description:</strong> {{taskDescription}}</p>
+        <p><strong>📅 Completed On:</strong> {{completedDate}}</p>
       </div>
     </div>
 
-    <div class="pt-4 text-center">
-      <a href="https://yourtaskmanager.com/login" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
-        📁 View Task
-      </a>
+    <div class="button-container">
+      <a href="https://yourtaskmanager.com/login" class="view-button">📁 View Task</a>
     </div>
 
-    <div class="text-center text-sm text-gray-500 pt-6">
+    <div class="footer">
       <p>Keep up the momentum 💼</p>
-      <p class="mt-1">This is an automated email from Task Manager.</p>
+      <p>This is an automated email from Task Manager.</p>
     </div>
   </div>
 </body>
