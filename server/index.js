@@ -6,6 +6,8 @@ import connectDB from './Database/connectDB.js';
 import authRoute from './routes/auth.routes.js';
 import taskRoute from './routes/task.routes.js';
 import userRoute from './routes/user.Routes.js';
+// import './schedule/remainder.js'
+
 env.config();
 
 const app = express();

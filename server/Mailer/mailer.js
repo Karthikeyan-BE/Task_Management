@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Load and compile HTML template with Handlebars
+
 function loadTemplate(templateName, replacements) {
   const filePath = path.join(__dirname, 'templates', `${templateName}.html`);
   const source = fs.readFileSync(filePath, 'utf8');
@@ -27,7 +27,7 @@ function loadTemplate(templateName, replacements) {
   return template(replacements);
 }
 
-// Exported async function to send an email
+
 export default async function sendMail({ to, subject, templateName, replacements }) {
   const html = loadTemplate(templateName, replacements);
   
@@ -46,5 +46,3 @@ export default async function sendMail({ to, subject, templateName, replacements
     console.error('❌ Failed to send email:', error);
   }
 }
-
-console.log(process.env.Mail);

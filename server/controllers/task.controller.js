@@ -1,6 +1,7 @@
 import Task from '../models/taskModel.js';
 import User from '../models/userModel.js';
 import sendMail from '../Mailer/mailer.js';
+import ExcelJS from 'exceljs';
 
 const isNonEmptyString = (val, min = 1, max = 1000) =>
     typeof val === 'string' && val.trim().length >= min && val.trim().length <= max;
@@ -42,7 +43,7 @@ const createTask = async (req, res) => {
             return res.status(400).json({ error: 'Invalid due date format' });
         }
         const isExistingTask = await Task.find({taskName});
-        if(isExistingTask){
+        if(isExistingTask.length){
             return res.status(400).json({ error: 'Task Name Already Exists' });
         }
         const assignedDate = new Date();
@@ -98,12 +99,15 @@ const updateTask = async (req, res) => {
         if(!taskId){
             return res.status(400).json({ error: 'Need Task ID' });
         }
+
         const { taskName, taskDescription, dueDate } = req.body;
-             const isExistingTask = await Task.find({taskName});
-        if(isExistingTask){
+
+        const isExistingTask = await Task.find({ taskName, _id: { $ne: taskId } });
+
+        if(isExistingTask.length){
             return res.status(400).json({ error: 'Task Name Already Exists' });
         }
-        const task = await Task.findById(id);
+        const task = await Task.findById(taskId);
         if (!task) {
             return res.status(404).json({ error: 'Task not found' });
         }
@@ -143,7 +147,7 @@ const deleteTask = async (req, res) => {
         if(!taskId){
             return res.status(400).json({ error: 'Need Task ID' });
         }
-        const task = await Task.findByIdAndDelete(id);
+        const task = await Task.findByIdAndDelete(taskId);
 
         if (!task) {
             return res.status(404).json({ error: 'Task not found' });
@@ -153,9 +157,9 @@ const deleteTask = async (req, res) => {
             { _id: { $in: [...task.assignedUsers, ...task.pendingUsers, ...task.completedUsers] } },
             {
                 $pull: {
-                    assignedTask: id,
-                    pendingTask: id,
-                    completedTask: id
+                    assignedTask: taskId,
+                    pendingTask: taskId,
+                    completedTask: taskId
                 }
             }
         );
@@ -180,7 +184,8 @@ const completeTask = async (req, res) => {
         }
         const task = await Task.findById(taskId);
         const user = await User.findById(userId);
-
+        console.log(userId,taskId);
+        
         if (!task || !user) {
             return res.status(404).json({ error: 'Task or User not found' });
         }
@@ -210,12 +215,53 @@ const completeTask = async (req, res) => {
         });
         return res.status(200).json({ message: 'Task marked as completed' });
     } catch (error) {
-        console.log(`error in Task controller \n ${error.message}`);
+        console.log(`error in Task controller \n ${error}`);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
+const getTaskById = async (req, res) => {
+    try {
+        const { taskId } = req.params;
 
+        const task = await Task.findById(taskId)
+            .populate('pendingUsers', 'staffId name email')
+            .populate('completedUsers', 'staffId name email');
+
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        const pendingUsers = task.pendingUsers.map(user => ({
+            _id:user._id,
+            staffId: user.staffId,
+            name: user.name,
+            email: user.email,
+            status: 'pending'
+        }));
+
+        const completedUsers = task.completedUsers.map(user => ({
+            _id:user._id,
+            staffId: user.staffId,
+            name: user.name,
+            email: user.email,
+            status: 'completed'
+        }));
+
+        const allUsers = [...pendingUsers, ...completedUsers];
+
+        res.status(200).json({
+            taskName: task.taskName,
+            taskDescription: task.taskDescription,
+            assignedDate: task.assignedDate,
+            dueDate: task.dueDate,
+            users: allUsers
+        });
+    } catch (error) {
+        console.error('Error in Task Controller:', error.message);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
 
 
 const downloadTaskReport = async (req, res) => {
@@ -249,7 +295,6 @@ const downloadTaskReport = async (req, res) => {
             dueDate: task.dueDate?.toDateString() || 'N/A',
         });
         
-        // Green text for completed users column (column E)
         row.getCell(5).font = {
             color: { argb: 'FF008000' },
             bold: true,
@@ -272,11 +317,63 @@ const downloadTaskReport = async (req, res) => {
 }
 };
 
+const taskReportById =async (req, res) => {
+    try {
+        const { taskId } = req.params;
+
+        const task = await Task.findById(taskId)
+            .populate('assignedUsers', 'name email')
+            .populate('pendingUsers', 'name email')
+            .populate('completedUsers', 'name email');
+
+        if (!task) {
+            return res.status(404).json({ error: 'Task not found' });
+        }
+
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Task Report');
+
+        // Define header and corresponding row
+        const data = [
+            ['Task Name', task.taskName],
+            ['Description', task.taskDescription],
+            ['Assigned Users', task.assignedUsers.map(u => `${u.name} (${u.email})`).join(', ')],
+            ['Pending Users', task.pendingUsers.map(u => `${u.name} (${u.email})`).join(', ')],
+            ['Completed Users', task.completedUsers.map(u => `${u.name} (${u.email})`).join(', ')],
+            ['Assigned Date', task.assignedDate.toISOString().split('T')[0]],
+            ['Due Date', task.dueDate.toISOString().split('T')[0]],
+        ];
+
+        data.forEach(row => worksheet.addRow(row));
+
+        res.setHeader(
+            'Content-Type',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        );
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename=Task_${task._id}.xlsx`
+        );
+
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (err) {
+        console.error('Error generating single task report:', err);
+        res.status(500).json({ error: 'Failed to generate report' });
+    }
+};
+
+
+
+
+
 export {
     getAllTask,
+    getTaskById,
     createTask,
     updateTask,
     deleteTask,
     completeTask,
-    downloadTaskReport
+    downloadTaskReport,
+    taskReportById
 };
