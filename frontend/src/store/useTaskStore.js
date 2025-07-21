@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 const useTaskStore = create((set) => ({
   users: [],
   tasks: [],
-  task:[],
+  task: [],
   selectedDepartment: null,
   isAddingTask: false,
   isUpdatingTask: false,
@@ -106,8 +106,7 @@ const useTaskStore = create((set) => ({
       });
 
       const blob = new Blob([response.data], {
-        type:
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
       const downloadUrl = window.URL.createObjectURL(blob);
@@ -126,7 +125,7 @@ const useTaskStore = create((set) => ({
   setTask: async (id) => {
     try {
       const res = await axiosInstance.get(`/task/${id}`);
-      set({ task:  res.data.users });
+      set({ task: res.data.users });
     } catch (error) {
       const errorMessage =
         error?.response?.data?.message ||
