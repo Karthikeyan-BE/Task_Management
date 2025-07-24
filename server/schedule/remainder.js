@@ -2,7 +2,7 @@ import cron from "node-cron";
 import User from "../models/userModel.js";
 import sendMail from "../Mailer/mailer.js";
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 9 * * *", async () => {
   console.log(
     "Running daily pending tasks email job:",
     new Date().toLocaleString()
@@ -32,7 +32,10 @@ cron.schedule("* * * * *", async () => {
           tasks,
         },
       });
+
       console.log(`Pending tasks email sent to ${user.email}`);
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
   } catch (err) {
     console.error("Error running daily pending tasks job:", err);

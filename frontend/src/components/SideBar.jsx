@@ -17,7 +17,7 @@ const Sidebar = () => {
     { label: 'Create Task', icon: <FilePlus2 className="w-5 h-5" />, href: '/createTask' },
     { label: 'Update Task', icon: <FileCheck2 className="w-5 h-5" />, href: '/updateTask' },
     { label: 'Status', icon: <History className="w-5 h-5" />, href: '/status' },
-    { label: 'Report', icon: <History className="w-5 h-5" />, href: '/report' },
+    // { label: 'Report', icon: <History className="w-5 h-5" />, href: '/report' },
   ];
 
   return (
